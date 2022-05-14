@@ -1,4 +1,4 @@
-name: ${{github.event.inputs.url}}
+name: 06-DL-Y
 on: 
   workflow_dispatch:
     inputs:
@@ -25,7 +25,7 @@ jobs:
         chmod +x go-ul
         sudo cp go-ul /usr/local/bin/go-ul
         sudo mkdir Y
-    - name: Downloading TS
+    - name: Downloading ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
       run: sudo ytarchive -v -w -t -o "Y/[%(upload_date)s] %(id)s %(title)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
