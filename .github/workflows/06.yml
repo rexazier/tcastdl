@@ -5,9 +5,12 @@ on:
       url:
         required: true
         description: Youtube URL
+      name:
+        required: true
+        description: Channel name
       audioOnly:
         type: boolean
-        description: dl Audio-only
+        description: DL Audio-only
         default: false
 jobs:
   Y-DL:
@@ -35,8 +38,8 @@ jobs:
     - name: Uploading
       timeout-minutes: 240
       run: go-ul pixeldrain gofile anonfiles catbox -d 'Y/' -r -o output/link.txt
-    - name: Upload Downloaded Videos
+    - name: Upload link ${{github.event.inputs.name}} Videos
       uses: actions/upload-artifact@v3
       with:
-        name: link
+        name: ${{github.event.inputs.name}}
         path: output
