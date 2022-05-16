@@ -1,4 +1,4 @@
-name: 02-DL
+name: 02-DL-FF
 on: 
   workflow_dispatch:
     inputs:
@@ -13,17 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-#     - name: Set up Apt
-#       run : sudo apt install curl
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with: 
-        python-version: '3.8'
-    - name: Install Requirements
-      run : pip3 install requests streamlink
-    - name: Download with streamlink
-      run: streamlink -l none -o '${{github.event.inputs.filename}}.ts' ${{github.event.inputs.url}} best
+    - name: Installing
+      run : |
+        sudo apt update
+        sudo wget 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz'
+        sudo tar xvf ffmpeg-master-latest-linux64-gpl.tar.xz
+        sudo chmod +x ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe
+        sudo mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/
+        sudo rm -rf ffmpeg-master-latest-linux64-gpl ffmpeg-master-latest-linux64-gpl.tar.xz
+    - name: Download with ffmpeg
+      run: |
+        ffmpeg -i '${{github.event.inputs.url}}' -c copy '${{github.event.inputs.filename}}.ts'
+        ffmpeg -i '${{github.event.inputs.url}}' -c copy -map_metadata -1 -movflag +faststart '${{github.event.inputs.filename}}.mp4'
     - name: Upload to transfersh
-      run: curl --upload-file "./${{github.event.inputs.filename}}.ts" "https://transfer.sh/${{github.event.inputs.filename}}.ts"
+      run: curl --upload-file "./${{github.event.inputs.filename}}.mp4" "https://transfer.sh/${{github.event.inputs.filename}}.mp4"
     - name: Delete file
       run: rm "./${{github.event.inputs.filename}}.ts"
