@@ -60,6 +60,6 @@ jobs:
     - name: Send file to discord
       uses: sinshutu/upload-to-discord@master
       env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_TS }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RAW }}
       with:
         args: output/*.txt
