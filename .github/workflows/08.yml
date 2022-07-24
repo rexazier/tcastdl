@@ -58,7 +58,7 @@ jobs:
         VOE_FTP: ${{ secrets.VOE_FTP }}
         FTP_1F: ${{ secrets.FTP_1F }}
       run: |
-        go-ul pixeldrain anonfiles catbox ftp gofile -d 'UL/' -r -u '${{ env.FTP_1F }}' -O -o 'output/link.txt'
+        go-ul catbox ftp gofile anonfiles pixeldrain -d 'UL/' -r -u '${{ env.FTP_1F }}' -O -o 'output/link.txt'
         mv 'output/link.txt' 'output/${{github.event.inputs.filename}}.txt'
         go-ul ftp -d 'UL/' -r -u '${{ env.VOE_FTP }}/twitcast' -O
         mv *.ts DL/
