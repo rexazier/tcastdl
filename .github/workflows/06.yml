@@ -37,10 +37,10 @@ jobs:
     - name: Downloading ${{github.event.inputs.name}} ${{github.event.inputs.url}}
       timeout-minutes: 360
       if: ${{github.event.inputs.audioOnly == 'false'}}
-      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
+      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s (%(channel)s)" --add-metadata --separate-audio --threads 8 "${{github.event.inputs.url}}" best
     - name: Downloading Audio-only
       if: ${{github.event.inputs.audioOnly == 'true'}}
-      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
+      run: ytarchive -v -w -t -o "DL/[%(upload_date)s] %(id)s (%(channel)s)" --add-metadata --threads 8 "${{github.event.inputs.url}}" audio_only
     - name: Uploading ftp
       if: ${{github.event.inputs.audioOnly == 'false'}}
       timeout-minutes: 240
@@ -54,7 +54,7 @@ jobs:
         VOE_FTP: ${{ secrets.VOE_FTP }}
         FTP_1F: ${{ secrets.FTP_1F }}
       run: |
-        go-ul pixeldrain anonfiles catbox ftp gofile -d 'DL/' -r -u '${{ env.FTP_1F }}' -O -o output/link.txt
+        go-ul catbox ftp gofile anonfiles pixeldrain -d 'DL/' -r -u '${{ env.FTP_1F }}' -O -o output/link.txt
         mv output/link.txt "output/$(date +'[%Y-%m-%d]')_${{github.event.inputs.name}}_$(echo '${{github.event.inputs.url}}' | tail -c 12).txt"
     - name: Upload link ${{github.event.inputs.name}}s Videos
       uses: actions/upload-artifact@v3
